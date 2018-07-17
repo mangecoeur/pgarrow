@@ -15,12 +15,11 @@ import pyarrow as pa
 
 from builder cimport (CArrayBuilder, CInt32Builder, CInt64Builder,
 CFloatBuilder, CDoubleBuilder, CAdaptiveIntBuilder,
-CBooleanBuilder, CPrimitiveBuilder
+CBooleanBuilder, CPrimitiveBuilder,
 # CTimestampBuilder,
-DoubleBuilder, Int64Builder
 )
 
-# from builderlib cimport DoubleBuilder, Int64Builder
+from builderlib cimport DoubleBuilder, Int64Builder
 
 cimport pyarrow.lib as palib
 from pyarrow.lib cimport *

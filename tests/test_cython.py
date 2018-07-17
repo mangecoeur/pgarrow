@@ -41,10 +41,15 @@ def main():
     # test_in_cython()
     # r = test_edrp_readdat('elec_daily_smol.pgdat')
 
+    import os
+
+    path = os.path.dirname(os.path.realpath(__file__))
+
     # TODO: this read should be do-able in under 9seconds
-    r = test_edrp_readdat('elec_daily.pgdat')
+    r = test_edrp_readdat(os.path.join(path, 'fixtures', 'elec_daily.pgdat'))
     print(r)
     # r = parser.test_edrp_readdat('elec_daily.pgdat')
+    #
     # engine = psycopg2.connect(POSTGRES_URI)
     # r = test_edrp_readq(engine)
     # print(r)

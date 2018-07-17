@@ -1,15 +1,15 @@
 # distutils: language=c++
 from libcpp.memory cimport shared_ptr, unique_ptr
+from hton cimport unpack_int16, unpack_int32, unpack_int64, unpack_float, unpack_double
 
-from pyarrow.lib cimport CArray
+from pyarrow.lib cimport CArray, CStatus
 from pyarrow.lib cimport pyarrow_wrap_array, check_status
-from builder cimport CBooleanBuilder, CPrimitiveBuilder, CAdaptiveIntBuilder, CInt64Builder, CDoubleBuilder
+from builder cimport CArrayBuilder, CBooleanBuilder, CPrimitiveBuilder, CAdaptiveIntBuilder, CInt64Builder, CDoubleBuilder
 
-# cdef class ArrayBuilder:
 
 
 cdef class Int64Builder:
-    cdef CInt64Builder* c_builder
+    # cdef CInt64Builder* c_builder
 
     def __cinit__(self):
         self.c_builder = new CInt64Builder()
@@ -29,12 +29,12 @@ cdef class Int64Builder:
 
     cpdef finish(self):
         cdef shared_ptr[CArray] id_array
-        res = check_status(self.c_builder.Finish(&id_array))
-        # TODO check return value and andle
+        cdef int res = check_status(self.c_builder.Finish(&id_array))
+        # TODO check return value and handle
         return pyarrow_wrap_array(id_array)
 
 cdef class DoubleBuilder:
-    cdef CDoubleBuilder* c_builder
+    # cdef CDoubleBuilder* c_builder
 
     def __cinit__(self):
         self.c_builder = new CDoubleBuilder()
@@ -54,7 +54,7 @@ cdef class DoubleBuilder:
 
     cpdef finish(self):
         cdef shared_ptr[CArray] id_array
-        res = check_status(self.c_builder.Finish(&id_array))
+        cdef int res = check_status(self.c_builder.Finish(&id_array))
         # TODO check return value and andle
         return pyarrow_wrap_array(id_array)
 
