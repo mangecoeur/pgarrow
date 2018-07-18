@@ -4,7 +4,7 @@ from libcpp cimport bool
 from libc.stdint cimport uint16_t, uint32_t, uint64_t, int16_t, int32_t, int64_t
 
 from pyarrow.includes.common cimport *
-from pyarrow.includes.libarrow cimport CStatus, CArray, CMemoryPool, CDataType
+from pyarrow.includes.libarrow cimport CStatus, CArray, CMemoryPool, CDataType, CTimestampType
 from pyarrow.includes.libarrow cimport *
 # from pyarrow.lib cimport *
 
@@ -94,9 +94,10 @@ cdef extern from "arrow/builder.h" namespace "arrow" nogil:
         CDoubleBuilder()
         CStatus Append(double)
 
-    # cdef cppclass CTimestampBuilder" arrow::TimestampBuilder"(CNumericBuilder):
-    #     CTimestampBuilder(CMemoryPool*)
-    #     CTimestampBuilder()
+    cdef cppclass CTimestampBuilder" arrow::TimestampBuilder"[CTimestampType](CNumericBuilder):
+        CTimestampBuilder(CMemoryPool*)
+        CTimestampBuilder()
+        CStatus Append(CTimestampType)
 
     cdef cppclass CTime32Builder" arrow::Time32Builder"(CNumericBuilder):
         CTime32Builder(CMemoryPool*)

@@ -364,7 +364,7 @@ body.cython { font-family: courier; font-size: 12; }
     Click on a line that starts with a "<code>+</code>" to see the C code that Cython generated for it.
 </p>
 <p>Raw output: <a href="typemap.pxi">typemap.pxi</a></p>
-<div class="cython"><pre class="cython line score-0">&#xA0;<span class="">001</span>: <span class="c"># from pyarrow.lib cimport Type</span></pre>
+<div class="cython"><pre class="cython line score-0">&#xA0;<span class="">001</span>: <span class="k">from</span> <span class="nn">pyarrow.lib</span> <span class="k">cimport</span> <span class="n">Type</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">002</span>: <span class="k">cimport</span> <span class="nn">pyarrow.lib</span> <span class="k">as</span> <span class="nn">pa</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">003</span>: <span class="c"># import pyarrow as pa</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">004</span>: </pre>
@@ -445,7 +445,7 @@ body.cython { font-family: courier; font-size: 12; }
   __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_2, __pyx_n_s_timestamp);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(7, 14, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_Call</span>(__pyx_t_3, __pyx_tuple__9, NULL);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(7, 14, __pyx_L1_error)</span>
+  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_Call</span>(__pyx_t_3, __pyx_tuple__8, NULL);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(7, 14, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
   if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_1114, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(7, 8, __pyx_L1_error)</span>
@@ -455,23 +455,57 @@ body.cython { font-family: courier; font-size: 12; }
   <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_t_1);
   __pyx_t_1 = 0;
 /* … */
-  __pyx_tuple__9 = <span class='py_c_api'>PyTuple_Pack</span>(1, __pyx_n_s_ns);<span class='error_goto'> if (unlikely(!__pyx_tuple__9)) __PYX_ERR(7, 14, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__9);
-  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__9);
+  __pyx_tuple__8 = <span class='py_c_api'>PyTuple_Pack</span>(1, __pyx_n_s_ns);<span class='error_goto'> if (unlikely(!__pyx_tuple__8)) __PYX_ERR(7, 14, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__8);
+  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__8);
 </pre><pre class="cython line score-0">&#xA0;<span class="">015</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">016</span>: <span class="p">}</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">017</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">018</span>: <span class="c"># TODO decide if we use type codes or DataType</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">019</span>: <span class="c"># NOTE type codes could be consider private so to avoid...</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">020</span>: <span class="c"># cdef dict PGTYPEMAP = {</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">021</span>: <span class="c">#     BOOLOID: Type._Type_BOOL,</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">022</span>: <span class="c">#     INT2OID: Type._Type_INT16,</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">023</span>: <span class="c">#     INT4OID: Type._Type_INT32,</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">024</span>: <span class="c">#     INT8OID: Type._Type_INT64,</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">025</span>: <span class="c">#     FLOAT4OID: Type._Type_FLOAT,</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">026</span>: <span class="c">#     FLOAT8OID: Type._Type_DOUBLE,</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">027</span>: <span class="c">#     TIMESTAMPOID: Type._Type_TIMESTAMP</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">028</span>: <span class="c"># }</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">020</span>: <span class="k">cdef</span> <span class="kt">dict</span> <span class="nf">PG_OID_TYPEMAP</span> <span class="o">=</span> <span class="p">{</span></pre>
+<pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">021</span>:     <span class="n">BOOLOID</span><span class="p">:</span> <span class="n">Type</span><span class="o">.</span><span class="n">_Type_BOOL</span><span class="p">,</span></pre>
+<pre class='cython code score-8 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyDict_NewPresized</span>(7);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(7, 21, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::BOOL);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(7, 21, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_16, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(7, 21, __pyx_L1_error)</span>
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+</pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">022</span>:     <span class="n">INT2OID</span><span class="p">:</span> <span class="n">Type</span><span class="o">.</span><span class="n">_Type_INT16</span><span class="p">,</span></pre>
+<pre class='cython code score-6 '>  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::INT16);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(7, 22, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_21, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(7, 21, __pyx_L1_error)</span>
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+</pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">023</span>:     <span class="n">INT4OID</span><span class="p">:</span> <span class="n">Type</span><span class="o">.</span><span class="n">_Type_INT32</span><span class="p">,</span></pre>
+<pre class='cython code score-6 '>  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::INT32);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(7, 23, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_23, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(7, 21, __pyx_L1_error)</span>
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+</pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">024</span>:     <span class="n">INT8OID</span><span class="p">:</span> <span class="n">Type</span><span class="o">.</span><span class="n">_Type_INT64</span><span class="p">,</span></pre>
+<pre class='cython code score-6 '>  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::INT64);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(7, 24, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_20, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(7, 21, __pyx_L1_error)</span>
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+</pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">025</span>:     <span class="n">FLOAT4OID</span><span class="p">:</span> <span class="n">Type</span><span class="o">.</span><span class="n">_Type_FLOAT</span><span class="p">,</span></pre>
+<pre class='cython code score-6 '>  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::FLOAT);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(7, 25, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_700, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(7, 21, __pyx_L1_error)</span>
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+</pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">026</span>:     <span class="n">FLOAT8OID</span><span class="p">:</span> <span class="n">Type</span><span class="o">.</span><span class="n">_Type_DOUBLE</span><span class="p">,</span></pre>
+<pre class='cython code score-6 '>  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::DOUBLE);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(7, 26, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_701, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(7, 21, __pyx_L1_error)</span>
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+</pre><pre class="cython line score-7" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">027</span>:     <span class="n">TIMESTAMPOID</span><span class="p">:</span> <span class="n">Type</span><span class="o">.</span><span class="n">_Type_TIMESTAMP</span></pre>
+<pre class='cython code score-7 '>  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::TIMESTAMP);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(7, 27, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_1114, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(7, 21, __pyx_L1_error)</span>
+  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
+  <span class='refnanny'>__Pyx_XGOTREF</span>(__pyx_v_7pgarrow_6parser_PG_OID_TYPEMAP);
+  <span class='pyx_macro_api'>__Pyx_DECREF_SET</span>(__pyx_v_7pgarrow_6parser_PG_OID_TYPEMAP, ((PyObject*)__pyx_t_1));
+  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_t_1);
+  __pyx_t_1 = 0;
+</pre><pre class="cython line score-0">&#xA0;<span class="">028</span>: <span class="p">}</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">029</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">030</span>: <span class="c"># BYTEAOID</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">031</span>: <span class="c"># CHAROID</span></pre>

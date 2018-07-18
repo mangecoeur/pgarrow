@@ -1,31 +1,22 @@
-# from pyarrow.lib cimport Type
+from pyarrow.lib cimport Type
 cimport pyarrow.lib as pa
 # import pyarrow as pa
 
 include "protocol/pgtypes.pxi"
 
-cdef dict PGTYPEMAP = {
-    BOOLOID: pa.bool_(),
-    INT2OID: pa.int16(),
-    INT4OID: pa.int32(),
-    INT8OID: pa.int64(),
-    FLOAT4OID: pa.float32(),
-    FLOAT8OID: pa.float64(),
-    TIMESTAMPOID: pa.timestamp('ns')
 
-}
 
 # TODO decide if we use type codes or DataType
 # NOTE type codes could be consider private so to avoid...
-# cdef dict PGTYPEMAP = {
-#     BOOLOID: Type._Type_BOOL,
-#     INT2OID: Type._Type_INT16,
-#     INT4OID: Type._Type_INT32,
-#     INT8OID: Type._Type_INT64,
-#     FLOAT4OID: Type._Type_FLOAT,
-#     FLOAT8OID: Type._Type_DOUBLE,
-#     TIMESTAMPOID: Type._Type_TIMESTAMP
-# }
+cdef dict PG_OID_TYPEMAP = {
+    BOOLOID: Type._Type_BOOL,
+    INT2OID: Type._Type_INT16,
+    INT4OID: Type._Type_INT32,
+    INT8OID: Type._Type_INT64,
+    FLOAT4OID: Type._Type_FLOAT,
+    FLOAT8OID: Type._Type_DOUBLE,
+    TIMESTAMPOID: Type._Type_TIMESTAMP
+}
 
 # BYTEAOID
 # CHAROID

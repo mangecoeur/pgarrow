@@ -4,9 +4,10 @@
 # TODO a lot of this is overkill for MVP  -do better wrap of builder types and use the wrapped ones, let Cython deal with the rest.
 
 from libcpp cimport bool
+from libc.stdint cimport int16_t, int32_t, uint16_t, uint32_t, int64_t, uint64_t
+
 from libcpp.memory cimport shared_ptr, unique_ptr
 from libcpp.vector cimport vector
-# cimport hton
 
 from hton cimport unpack_int16, unpack_int32, unpack_int64, unpack_float, unpack_double
 import datetime
@@ -22,73 +23,98 @@ CBooleanBuilder, CPrimitiveBuilder,
 from builderlib cimport DoubleBuilder, Int64Builder
 
 cimport pyarrow.lib as palib
-from pyarrow.lib cimport *
-from pyarrow.lib cimport CTable, CColumn, CField
-from pyarrow.lib cimport Table, Column, Field, DataType
-from pyarrow.lib cimport check_status, pyarrow_unwrap_schema, pyarrow_unwrap_field, pyarrow_wrap_column, pyarrow_wrap_table
+# from pyarrow.lib cimport *
+from pyarrow.lib cimport CArray, CTable, CColumn, CField, CDataType
+from pyarrow.lib cimport Table, Column, Field, DataType, Type
+from pyarrow.lib cimport check_status, pyarrow_unwrap_schema, pyarrow_unwrap_field, pyarrow_wrap_column, pyarrow_wrap_table, pyarrow_unwrap_data_type
 
 
 include "typemap.pxi"
-# include "protocol/pgtypes.pxi"
 
 
-cdef get_feild_oids(field_types):
+cdef dict PG_PA_TYPEMAP = {
+    BOOLOID: pa.bool_(),
+    INT2OID: pa.int16(),
+    INT4OID: pa.int32(),
+    INT8OID: pa.int64(),
+    FLOAT4OID: pa.float32(),
+    FLOAT8OID: pa.float64(),
+    TIMESTAMPOID: pa.timestamp('ns')
+
+}
+
+
+cdef get_pg_oids(field_types):
+    """
+    Convert text field types to PG field OIDs
+    :param field_types: 
+    :return: 
+    """
     tmap = {v: k for k, v in TYPEMAP.items()}
     return [tmap[t] for t in field_types]
 
 
-cdef make_array_builder(DataType patyp,bool strings_as_dictionary, bool adaptive_integers):
+cdef get_pa_types(pg_oids):
+    return  [PG_OID_TYPEMAP[pg_oid] for pg_oid in pg_oids]
+
+
+# cdef make_array_builder_inttype(patyp):
+#     if patyp == Type._Type_DOUBLE:
+#         return DoubleBuilder()
+#     elif patyp == Type._Type_INT64:
+#         return Int64Builder()
+#     elif patyp == Type._Type_TIMESTAMP:
+#         return DoubleBuilder()
+
+cdef make_array_builder(DataType patyp):
     if patyp == pa.float64():
         return DoubleBuilder()
     elif patyp == pa.int64():
         return Int64Builder()
-    # elif patyp == palib.int32():
-    #     return unique_ptr[CArrayBuilder](new CInt32Builder())
-    # elif patyp == palib.bool_():
-    #     return unique_ptr[CArrayBuilder](new CBooleanBuilder())
+    elif patyp == pa.timestamp('ns'):
+        return Int64Builder()
+
 
 
 cdef prepare_column_builders(field_types):
     # TODO need to enforce that these are never None
-    return [make_array_builder(typ, False, False) for typ in field_types]
+    return [make_array_builder(typ) for typ in field_types]
 
 
-cdef shared_ptr[CArray] finish_builder(unique_ptr[CArrayBuilder] builder):
-    cdef shared_ptr[CArray] id_array
-    res = check_status(builder.get()[0].Finish(&id_array))
-    return id_array
+# cdef shared_ptr[CArray] finish_builder(unique_ptr[CArrayBuilder] builder):
+#     cdef shared_ptr[CArray] id_array
+#     res = check_status(builder.get()[0].Finish(&id_array))
+#     return id_array
+#
+# cdef shared_ptr[CColumn] builder_to_column(unique_ptr[CArrayBuilder] builder, shared_ptr[CField] field):
+#     cdef shared_ptr[CArray] id_array
+#     res = check_status(builder.get()[0].Finish(&id_array))
+#     cdef shared_ptr[CColumn] col = shared_ptr[CColumn](new CColumn(field, id_array))
+#     return col
+#
+#
 
-cdef shared_ptr[CColumn] builder_to_column(unique_ptr[CArrayBuilder] builder, shared_ptr[CField] field):
-    cdef shared_ptr[CArray] id_array
-    res = check_status(builder.get()[0].Finish(&id_array))
-    cdef shared_ptr[CColumn] col = shared_ptr[CColumn](new CColumn(field, id_array))
-    return col
 
+cdef columns_to_arrow_table(columns, fields):
 
-
-
-# TODO probably want to prepare the fields somewhere else, at the start of the process
-cdef columns_to_arrow_table(columns, field_names, field_types):
-    # TODO could put more of this in C++
-    fields = [pa.field(n, t) for n, t in zip(field_names, field_types)]
-    pa_schema = pa.schema(fields)
+    # pa_schema = pa.schema(fields)
     data = []
     for i in range(len(columns)):
         field = fields[i]
         column_builder = columns[i]
         data.append(column_builder.finish())
 
-    return Table.from_arrays(data, field_names)
+    return Table.from_arrays(data, [f.name for f in fields])
 
-
-pg_epoch_datetime = datetime.datetime(2000, 1, 1)
-
-# TODO rather decode directly to arrow datetime format
-def decode_timestamp(ts):
-    seconds = (ts / 1000000)
-    microseconds = (ts % 1000000)
-
-    return pg_epoch_datetime.__add__(datetime.timedelta(0, seconds, microseconds))
+#
+# pg_epoch_datetime = datetime.datetime(2000, 1, 1)
+#
+# # TODO rather decode directly to arrow datetime format
+# def decode_timestamp(ts):
+#     seconds = (ts / 1000000)
+#     microseconds = (ts % 1000000)
+#
+#     return pg_epoch_datetime.__add__(datetime.timedelta(0, seconds, microseconds))
 
 
 cdef parse_header(buffer):
@@ -107,8 +133,8 @@ cdef read_tuple(buffer, field_types, columns):
         return False
 
     cdef int32_t len_field = 0
-    cdef DataType pgtyp
-    # cdef int i = 0
+    # cdef DataType pgtyp
+    cdef Type pgtyp
 
     for i in range(n_fields):
         len_field = unpack_int32(buffer.read(4))
@@ -122,21 +148,21 @@ cdef read_tuple(buffer, field_types, columns):
         pgtyp = field_types[i]
 
         # TODO get rid of call into pure-python world for type code (map to type IDs?)
-        if pgtyp == pa.int16():
+        if pgtyp == Type._Type_INT16:
             field_dat =  unpack_int16(field_dat)
 
-        elif pgtyp == pa.int32():
+        elif pgtyp ==  Type._Type_INT32:
             field_dat =  unpack_int32(field_dat)
-        elif pgtyp == pa.int64():
+        elif pgtyp ==  Type._Type_INT64:
             field_dat =  unpack_int64(field_dat)
 
-        elif pgtyp == pa.float32():
+        elif pgtyp == Type._Type_FLOAT:
             field_dat =  unpack_float(field_dat)
 
-        elif pgtyp == pa.float64():
+        elif pgtyp ==  Type._Type_DOUBLE:
             field_dat =  unpack_double(field_dat)
 
-        elif pgtyp == pa.timestamp('ns'):
+        elif pgtyp == Type._Type_TIMESTAMP:
             field_dat =  unpack_double(field_dat)
 
         # FIXME: would need to cast to right kind of arraybuilder?
@@ -145,12 +171,41 @@ cdef read_tuple(buffer, field_types, columns):
     return True
 
 
+cdef read_tuple2(buffer, column_builders):
+    # Field count
+    cdef int16_t n_fields = unpack_int16(buffer.read(2))
+    if n_fields == -1:
+        # End reached
+        return False
+
+    cdef int32_t len_field = 0
+
+    cdef bytes field_dat
+
+    for i in range(n_fields):
+        len_field = unpack_int32(buffer.read(4))
+        if len_field == -1:
+            # Null field
+            column_builders[i]._append_null()
+            continue
+
+        field_dat = buffer.read(len_field)
+        column_builders[i].append_bytes(field_dat)
+
+    return True
+
+
 
 cdef process_buffer(buffer, field_types, column_builders):
     parse_header(buffer)
     cont = True
+
+    # cdef vector[shared_ptr[CDataType]] cfield_types
+    # for typ in field_types:
+    #     cfield_types.push_back(pyarrow_unwrap_data_type(typ))
     while cont:
-        cont = read_tuple(buffer, field_types, column_builders)
+        # cont = read_tuple(buffer, field_types, column_builders)
+        cont = read_tuple2(buffer, column_builders)
 
 # TODO:
 # - Generate a list a builders matching the field types. note that since we are using Cython mapped
@@ -171,14 +226,21 @@ cdef process_buffer(buffer, field_types, column_builders):
 #     return c_columns_to_arrow_table(column_builders, field_names, field_types)
 
 cdef _read_pg_file(filename, field_names, field_types):
-    column_builders = prepare_column_builders(field_types)
+    # wrangle field type defs
+    pg_oids = get_pg_oids(field_types)
+    pa_object_field_type = [PG_PA_TYPEMAP[oid] for oid in pg_oids]
 
-    # field_oids = get_feild_oids(field_types)
+    pa_field_types = get_pa_types(pg_oids)
+
+    fields = [pa.field(n, t) for n, t in zip(field_names, pa_object_field_type)]
+
+    column_builders = prepare_column_builders(pa_object_field_type)
 
     with open(filename, 'rb') as buffer:
-        process_buffer(buffer, field_types, column_builders)
+        process_buffer(buffer, pa_field_types, column_builders)
 
-    return columns_to_arrow_table(column_builders, field_names, field_types)
+    # TODO temporary hack
+    return columns_to_arrow_table(column_builders, fields)
 
 def read_pg_file(filename, field_names, field_types):
     return _read_pg_file(filename, field_names, field_types)

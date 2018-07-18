@@ -15,11 +15,16 @@ cdef class Int64Builder:
         self.c_builder = new CInt64Builder()
 
     # TODO find a way to allow null in append
-    cdef _append(self, long val):
+    cpdef _append(self, long val):
         self.c_builder.Append(val)
 
-    cdef _append_null(self):
+    cpdef _append_null(self):
         self.c_builder.AppendNull()
+
+
+    cpdef append_bytes(self, bytes dat):
+        cdef long field_dat = unpack_int64(dat)
+        self._append(field_dat)
 
     def append(self, val=None):
         if val is None:
@@ -40,11 +45,44 @@ cdef class DoubleBuilder:
         self.c_builder = new CDoubleBuilder()
 
     # TODO find a way to allow null in append
-    cdef _append(self, double val):
+    cpdef _append(self, double val):
         self.c_builder.Append(val)
 
-    cdef _append_null(self):
+    cpdef _append_null(self):
         self.c_builder.AppendNull()
+
+    cpdef append_bytes(self, bytes dat):
+        cdef double field_dat = unpack_double(dat)
+        self._append(field_dat)
+
+    def append(self, val=None):
+        if val is None:
+            self._append_null()
+        else:
+            self.append(val)
+
+    cpdef finish(self):
+        cdef shared_ptr[CArray] id_array
+        cdef int res = check_status(self.c_builder.Finish(&id_array))
+        # TODO check return value and andle
+        return pyarrow_wrap_array(id_array)
+
+cdef class TimestampBuilder:
+    # cdef CDoubleBuilder* c_builder
+
+    def __cinit__(self):
+        self.c_builder = new CDoubleBuilder()
+
+    # TODO find a way to allow null in append
+    cpdef _append(self, long val):
+        self.c_builder.Append(val)
+
+    cpdef _append_null(self):
+        self.c_builder.AppendNull()
+
+    cpdef append_bytes(self, bytes dat):
+        cdef long field_dat = unpack_int64(dat)
+        self._append(field_dat)
 
     def append(self, val=None):
         if val is None:

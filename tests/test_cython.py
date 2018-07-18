@@ -11,8 +11,8 @@ def test_in_cython():
 def test_edrp_readdat(filename):
     # hardcode from edrp_daily table
     field_names = ['site_id', 'reading_date', 'temperature_max', 'temperature_min', 'temperature_mean', 'power']
-    # field_types = ['int8', 'timestamp', 'float8', 'float8', 'float8', 'float8']
-    field_types = [pa.int64(), pa.float64(), pa.float64(), pa.float64(), pa.float64(), pa.float64()]
+    field_types = ['int8', 'timestamp', 'float8', 'float8', 'float8', 'float8']
+    # field_types = [pa.int64(), pa.float64(), pa.float64(), pa.float64(), pa.float64(), pa.float64()]
     return parser.read_pg_file(filename, field_names, field_types)
 
 
