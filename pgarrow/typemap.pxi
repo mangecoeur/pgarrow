@@ -1,9 +1,6 @@
 from pyarrow.lib cimport Type
 cimport pyarrow.lib as pa
-# import pyarrow as pa
-
 include "protocol/pgtypes.pxi"
-
 
 
 # TODO decide if we use type codes or DataType

@@ -4,17 +4,14 @@ from hton cimport unpack_int16, unpack_int32, unpack_int64, unpack_float, unpack
 
 from pyarrow.lib cimport CArray, CStatus
 from pyarrow.lib cimport pyarrow_wrap_array, check_status
-from builder cimport CArrayBuilder, CBooleanBuilder, CPrimitiveBuilder, CAdaptiveIntBuilder, CInt64Builder, CDoubleBuilder
+from builderlib cimport CArrayBuilder, CBooleanBuilder, CPrimitiveBuilder, CAdaptiveIntBuilder, CInt64Builder, CDoubleBuilder, CTimestampBuilder
 
 
 
 cdef class Int64Builder:
-    # cdef CInt64Builder* c_builder
-
     def __cinit__(self):
         self.c_builder = new CInt64Builder()
 
-    # TODO find a way to allow null in append
     cpdef _append(self, long val):
         self.c_builder.Append(val)
 
@@ -39,12 +36,9 @@ cdef class Int64Builder:
         return pyarrow_wrap_array(id_array)
 
 cdef class DoubleBuilder:
-    # cdef CDoubleBuilder* c_builder
-
     def __cinit__(self):
         self.c_builder = new CDoubleBuilder()
 
-    # TODO find a way to allow null in append
     cpdef _append(self, double val):
         self.c_builder.Append(val)
 
@@ -67,34 +61,31 @@ cdef class DoubleBuilder:
         # TODO check return value and andle
         return pyarrow_wrap_array(id_array)
 
-cdef class TimestampBuilder:
-    # cdef CDoubleBuilder* c_builder
-
-    def __cinit__(self):
-        self.c_builder = new CDoubleBuilder()
-
-    # TODO find a way to allow null in append
-    cpdef _append(self, long val):
-        self.c_builder.Append(val)
-
-    cpdef _append_null(self):
-        self.c_builder.AppendNull()
-
-    cpdef append_bytes(self, bytes dat):
-        cdef long field_dat = unpack_int64(dat)
-        self._append(field_dat)
-
-    def append(self, val=None):
-        if val is None:
-            self._append_null()
-        else:
-            self.append(val)
-
-    cpdef finish(self):
-        cdef shared_ptr[CArray] id_array
-        cdef int res = check_status(self.c_builder.Finish(&id_array))
-        # TODO check return value and andle
-        return pyarrow_wrap_array(id_array)
+# cdef class TimestampBuilder:
+#     def __cinit__(self):
+#         self.c_builder = new CTimestampBuilder()
+#
+#     cpdef _append(self, long val):
+#         self.c_builder.Append(val)
+#
+#     cpdef _append_null(self):
+#         self.c_builder.AppendNull()
+#
+#     cpdef append_bytes(self, bytes dat):
+#         cdef long field_dat = unpack_int64(dat)
+#         self._append(field_dat)
+#
+#     def append(self, val=None):
+#         if val is None:
+#             self._append_null()
+#         else:
+#             self.append(val)
+#
+#     cpdef finish(self):
+#         cdef shared_ptr[CArray] id_array
+#         cdef int res = check_status(self.c_builder.Finish(&id_array))
+#         # TODO check return value and andle
+#         return pyarrow_wrap_array(id_array)
 
 #
 #         CArrayBuilder(const shared_ptr[CDataType], CMemoryPool*)
