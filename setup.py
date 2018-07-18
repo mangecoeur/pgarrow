@@ -34,7 +34,6 @@ setup(
     # TODO probably don't need this
     entry_points={
         'console_scripts': [
-            'pgarrow=pgarrow.cli:cli'
         ]
     },
     install_requires=requirements,

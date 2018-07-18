@@ -21,7 +21,7 @@ from pyarrow.lib cimport check_status, pyarrow_unwrap_schema, pyarrow_unwrap_fie
 # # CTimestampBuilder,
 # )
 
-from builder cimport DoubleBuilder, Int64Builder
+from builder cimport AbstractBuilder, DoubleBuilder, Int64Builder
 
 
 
@@ -66,15 +66,12 @@ cdef make_array_builder(DataType patyp):
         return Int64Builder()
 
 
-
 cdef prepare_column_builders(field_types):
     # TODO need to enforce that these are never None
     return [make_array_builder(typ) for typ in field_types]
 
 
 cdef columns_to_arrow_table(columns, fields):
-
-    # pa_schema = pa.schema(fields)
     data = []
     for i in range(len(columns)):
         field = fields[i]
@@ -155,18 +152,21 @@ cdef read_tuple(buffer, column_builders):
         return False
 
     cdef int32_t len_field = 0
+    cdef AbstractBuilder builder
 
     cdef bytes field_dat
 
     for i in range(n_fields):
         len_field = unpack_int32(buffer.read(4))
+
+        builder = column_builders[i]
         if len_field == -1:
             # Null field
-            column_builders[i]._append_null()
+            builder._append_null()
             continue
 
         field_dat = buffer.read(len_field)
-        column_builders[i].append_bytes(field_dat)
+        builder.append_bytes(field_dat)
 
     return True
 

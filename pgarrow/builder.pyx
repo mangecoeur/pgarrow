@@ -7,15 +7,22 @@ from pyarrow.lib cimport pyarrow_wrap_array, check_status
 from builderlib cimport CArrayBuilder, CBooleanBuilder, CPrimitiveBuilder, CAdaptiveIntBuilder, CInt64Builder, CDoubleBuilder, CTimestampBuilder
 
 
+cdef class AbstractBuilder:
+    cdef _append_null(self):
+        pass
 
-cdef class Int64Builder:
+    cpdef append_bytes(self, bytes dat):
+        pass
+
+
+cdef class Int64Builder(AbstractBuilder):
     def __cinit__(self):
         self.c_builder = new CInt64Builder()
 
-    cpdef _append(self, long val):
+    cdef _append(self, long val):
         self.c_builder.Append(val)
 
-    cpdef _append_null(self):
+    cdef _append_null(self):
         self.c_builder.AppendNull()
 
 
@@ -35,14 +42,15 @@ cdef class Int64Builder:
         # TODO check return value and handle
         return pyarrow_wrap_array(id_array)
 
-cdef class DoubleBuilder:
+
+cdef class DoubleBuilder(AbstractBuilder):
     def __cinit__(self):
         self.c_builder = new CDoubleBuilder()
 
-    cpdef _append(self, double val):
+    cdef _append(self, double val):
         self.c_builder.Append(val)
 
-    cpdef _append_null(self):
+    cdef _append_null(self):
         self.c_builder.AppendNull()
 
     cpdef append_bytes(self, bytes dat):
@@ -72,6 +80,7 @@ cdef class DoubleBuilder:
 #         self.c_builder.AppendNull()
 #
 #     cpdef append_bytes(self, bytes dat):
+#         TODO account for different base epoch of PG
 #         cdef long field_dat = unpack_int64(dat)
 #         self._append(field_dat)
 #
