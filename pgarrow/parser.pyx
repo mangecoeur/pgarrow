@@ -178,7 +178,9 @@ cdef process_buffer(buffer, column_builders):
     while cont:
         cont = read_tuple(buffer, column_builders)
 
-cdef _read_pg_file(filename, field_names, field_types):
+
+cdef _read_pg_buffer(buffer, field_names, field_types):
+
     # wrangle field type defs
     pg_oids = get_pg_oids(field_types)
     pa_object_field_type = [PG_PA_TYPEMAP[oid] for oid in pg_oids]
@@ -189,11 +191,19 @@ cdef _read_pg_file(filename, field_names, field_types):
 
     column_builders = prepare_column_builders(pa_object_field_type)
 
-    with open(filename, 'rb') as buffer:
-        process_buffer(buffer, column_builders)
+    process_buffer(buffer, column_builders)
 
-    # TODO temporary hack
     return columns_to_arrow_table(column_builders, fields)
+
+
+def read_pg_buffer(buffer, field_names, field_types):
+    return _read_pg_buffer(buffer, field_names, field_types)
+
+
+cdef _read_pg_file(filename, field_names, field_types):
+    with open(filename, 'rb') as buffer:
+        return _read_pg_buffer(buffer, field_names, field_types)
+
 
 def read_pg_file(filename, field_names, field_types):
     return _read_pg_file(filename, field_names, field_types)
