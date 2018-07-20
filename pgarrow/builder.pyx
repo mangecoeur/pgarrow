@@ -4,7 +4,7 @@ from hton cimport unpack_int16, unpack_int32, unpack_int64, unpack_float, unpack
 
 from pyarrow.lib cimport CArray, CStatus
 from pyarrow.lib cimport pyarrow_wrap_array, check_status
-from builderlib cimport CArrayBuilder, CBooleanBuilder, CPrimitiveBuilder, CAdaptiveIntBuilder, CInt64Builder, CDoubleBuilder, CTimestampBuilder
+from builderlib cimport CArrayBuilder, CBooleanBuilder, CPrimitiveBuilder, CAdaptiveIntBuilder, CInt64Builder, CFloatBuilder, CDoubleBuilder, CTimestampBuilder
 
 
 cdef class AbstractBuilder:
@@ -14,6 +14,11 @@ cdef class AbstractBuilder:
     cpdef append_bytes(self, bytes dat):
         pass
 
+    def append(self, val=None):
+        if val is None:
+            self._append_null()
+        else:
+            self.append(val)
 
 cdef class Int64Builder(AbstractBuilder):
     def __cinit__(self):
@@ -30,16 +35,32 @@ cdef class Int64Builder(AbstractBuilder):
         cdef long field_dat = unpack_int64(dat)
         self._append(field_dat)
 
-    def append(self, val=None):
-        if val is None:
-            self._append_null()
-        else:
-            self.append(val)
-
     cpdef finish(self):
         cdef shared_ptr[CArray] id_array
         cdef int res = check_status(self.c_builder.Finish(&id_array))
         # TODO check return value and handle
+        return pyarrow_wrap_array(id_array)
+
+
+cdef class FloatBuilder(AbstractBuilder):
+    def __cinit__(self):
+        self.c_builder = new CFloatBuilder()
+
+    cdef _append(self, float val):
+        self.c_builder.Append(val)
+
+    cdef _append_null(self):
+        self.c_builder.AppendNull()
+
+    cpdef append_bytes(self, bytes dat):
+        cdef float field_dat = unpack_float(dat)
+        self._append(field_dat)
+
+
+    cpdef finish(self):
+        cdef shared_ptr[CArray] id_array
+        cdef int res = check_status(self.c_builder.Finish(&id_array))
+        # TODO check return value and andle
         return pyarrow_wrap_array(id_array)
 
 
@@ -57,11 +78,6 @@ cdef class DoubleBuilder(AbstractBuilder):
         cdef double field_dat = unpack_double(dat)
         self._append(field_dat)
 
-    def append(self, val=None):
-        if val is None:
-            self._append_null()
-        else:
-            self.append(val)
 
     cpdef finish(self):
         cdef shared_ptr[CArray] id_array
