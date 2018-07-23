@@ -1,4 +1,7 @@
 import io
+
+import psycopg2
+
 from pgarrow import parser
 from pgarrow.tools import timeit
 import pyarrow as pa
@@ -15,39 +18,27 @@ def test_edrp_readdat(filename):
 
 
 def test_edrp_readq(conn):
-    with io.BytesIO() as buffer, conn.cursor() as cur:
-        # cur.copy_expert('COPY edrp_edf.elec_daily TO STDOUT WITH (FORMAT BINARY)', buffer)
-        # TODO currently reads the whole thing to memory. Would prefer to use stream/pipe (probably need thread)
-        cur.copy_expert('COPY (SELECT * FROM edrp_edf.elec_daily LIMIT 1000) TO STDOUT WITH (FORMAT BINARY)', buffer)
-        buffer.seek(0)
+    field_names = ['site_id', 'reading_date', 'temperature_max', 'temperature_min', 'temperature_mean', 'power']
+    field_types = ['int8', 'timestamp', 'float8', 'float8', 'float8', 'float8']
+    query = 'COPY (SELECT * FROM edrp_edf.elec_daily) TO STDOUT WITH (FORMAT BINARY)'
 
+    with conn.cursor() as cur:
+        return parser.read_pg_query(cur, query, field_names, field_types)
 
-        # hardcode from edrp_daily table
-        field_names = ['site_id', 'reading_date', 'temperature_max', 'temperature_min', 'temperature_mean', 'power']
-        field_types = ['int8', 'timestamp', 'float8', 'float8', 'float8', 'float8']
-
-        out_table = parser.prepare_out_table(field_types)
-
-        parser.process_buffer(buffer, field_types, out_table)
-
-        return parser.columns_to_arrow_table(out_table, field_names, field_types)
 
 
 @timeit
 def main():
-    # test_in_cython()
-    # r = test_edrp_readdat('elec_daily_smol.pgdat')
-
     import os
-
-    path = os.path.dirname(os.path.realpath(__file__))
-    r = test_edrp_readdat(os.path.join(path, 'fixtures', 'elec_daily.pgdat'))
-    print(r)
+    # path = os.path.dirname(os.path.realpath(__file__))
+    # r = test_edrp_readdat(os.path.join(path, 'fixtures', 'elec_daily.pgdat'))
+    # print(r)
     # r = parser.test_edrp_readdat('elec_daily.pgdat')
     #
-    # engine = psycopg2.connect(POSTGRES_URI)
-    # r = test_edrp_readq(engine)
-    # print(r)
+    pg_uri = os.environ['POSTGRES_URI']
+    engine = psycopg2.connect(pg_uri)
+    r = test_edrp_readq(engine)
+    print(r)
 
 if __name__ == '__main__':
     main()

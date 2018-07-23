@@ -1,4 +1,6 @@
 # distutils: language=c++
+# cython: profile=True
+
 from libcpp.memory cimport shared_ptr, unique_ptr
 from hton cimport unpack_int16, unpack_int32, unpack_int64, unpack_float, unpack_double
 
@@ -8,15 +10,15 @@ from builderlib cimport CArrayBuilder, CBooleanBuilder, CPrimitiveBuilder, CAdap
 
 
 cdef class AbstractBuilder:
-    cdef _append_null(self):
+    cdef void append_null(self):
         pass
 
-    cpdef append_bytes(self, bytes dat):
+    cdef void append_bytes(self, char* dat) nogil:
         pass
 
     def append(self, val=None):
         if val is None:
-            self._append_null()
+            self.append_null()
         else:
             self.append(val)
 
@@ -27,13 +29,13 @@ cdef class Int64Builder(AbstractBuilder):
     cdef _append(self, long val):
         self.c_builder.Append(val)
 
-    cdef _append_null(self):
+    cdef  void append_null(self):
         self.c_builder.AppendNull()
 
 
-    cpdef append_bytes(self, bytes dat):
+    cdef void  append_bytes(self, char* dat) nogil:
         cdef long field_dat = unpack_int64(dat)
-        self._append(field_dat)
+        self.c_builder.Append(field_dat)
 
     cpdef finish(self):
         cdef shared_ptr[CArray] id_array
@@ -49,12 +51,12 @@ cdef class FloatBuilder(AbstractBuilder):
     cdef _append(self, float val):
         self.c_builder.Append(val)
 
-    cdef _append_null(self):
+    cdef void  append_null(self):
         self.c_builder.AppendNull()
 
-    cpdef append_bytes(self, bytes dat):
+    cdef void  append_bytes(self, char* dat) nogil:
         cdef float field_dat = unpack_float(dat)
-        self._append(field_dat)
+        self.c_builder.Append(field_dat)
 
 
     cpdef finish(self):
@@ -71,12 +73,12 @@ cdef class DoubleBuilder(AbstractBuilder):
     cdef _append(self, double val):
         self.c_builder.Append(val)
 
-    cdef _append_null(self):
+    cdef void  append_null(self):
         self.c_builder.AppendNull()
 
-    cpdef append_bytes(self, bytes dat):
+    cdef void  append_bytes(self, char* dat) nogil:
         cdef double field_dat = unpack_double(dat)
-        self._append(field_dat)
+        self.c_builder.Append(field_dat)
 
 
     cpdef finish(self):
@@ -84,6 +86,8 @@ cdef class DoubleBuilder(AbstractBuilder):
         cdef int res = check_status(self.c_builder.Finish(&id_array))
         # TODO check return value and andle
         return pyarrow_wrap_array(id_array)
+
+
 
 # cdef class TimestampBuilder:
 #     def __cinit__(self):
