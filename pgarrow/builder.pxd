@@ -30,10 +30,10 @@ cdef class DoubleBuilder(AbstractBuilder):
     cdef  void append_null(self)
     cdef  void append_bytes(self, char* dat) nogil
     cpdef finish(self)
-#
-# cdef class TimestampBuilder:
-#     cdef CTimestampBuilder* c_builder
-#     cpdef _append(self, long val)
-#     cpdef _append_null(self)
-#     cpdef append_bytes(self, bytes dat)
-#     cpdef finish(self)
+
+cdef class TimestampBuilder(AbstractBuilder):
+    cdef CTimestampBuilder* c_builder
+    cdef _append(self, long val)
+    cdef void  append_null(self)
+    cdef  void append_bytes(self, char* dat) nogil
+    cpdef finish(self)

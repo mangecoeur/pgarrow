@@ -241,9 +241,69 @@ cdef _read_pg_file(filename, field_names, field_types):
 def read_pg_file(filename, field_names, field_types):
     return _read_pg_file(filename, field_names, field_types)
 
+
+# TODO make this Cdef class...
+# TODO probably over-complicating things...
+class _ParserIO():
+    def __init__(self, field_builders):
+        super().__init__()
+        self.internal_buffer = b''
+        self.internal_buffer_len = 0
+        # Len header is 19, but just throw away that much for now.
+        self.bytes_needed = 19
+        self.field_builders = field_builders
+
+    def write(self, content):
+        l = len(content)
+        self.internal_buffer += content
+        # len of content might be constant?
+        self.internal_buffer_len += l
+
+        if self.internal_buffer_len >= self.bytes_needed:
+            data = self.internal_buffer[self.bytes_needed]
+
+            self.field_builders
+
+
+
+        # TODO set how many bytes are needed for the next read
+        # First skip the header
+        # Then will either be 4 bytes for int32 field length value, or the number of bytes in the field itself.
+        # Build a state machine style parser - each feild is a state, cycle through the builders
+        #
+        # Wait until len buffer > len field length value, then consume that much of the buffer
+        # If field length =-1, append a null.
+        # Then wait until len buffer > len of feild, then consume that much of buffer
+        # Write value using builder for field.
+        # Finally bump to next field
+
+
+        return l
+
+    def close(self):
+        pass
+
+#         # internal_buffer
+#
+# cdef class _ParserIO(io.BytesIO):
+#     cdef bytes internal_buffer
+#     cdef write(self, content):
+#         # TODO not sure how much gets written at a time...
+#         l = len(content)
+#         print(l)
+#         return l
+#         # internal_buffer
+
+
+
 # TODO operate on stream instead of reading into buffer
 cdef _read_pg_query(cursor, query, field_names, field_types):
+    # buffer = _ParserIO()
+    # cursor.copy_expert(query, buffer)
+    # with _ParserIO() as buffer:
 
+        # buffer.seek(0)
+        # return _read_pg_buffer(buffer, field_names, field_types)
     with io.BytesIO() as buffer:
         cursor.copy_expert(query, buffer)
         buffer.seek(0)

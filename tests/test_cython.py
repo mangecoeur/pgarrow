@@ -4,9 +4,6 @@ import psycopg2
 
 from pgarrow import parser
 from pgarrow.tools import timeit
-import pyarrow as pa
-
-
 
 
 def test_edrp_readdat(filename):
@@ -39,6 +36,7 @@ def main():
     engine = psycopg2.connect(pg_uri)
     r = test_edrp_readq(engine)
     print(r)
+
 
 if __name__ == '__main__':
     main()

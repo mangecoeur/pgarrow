@@ -373,41 +373,41 @@ body.cython { font-family: courier; font-size: 12; }
 <pre class="cython line score-0">&#xA0;<span class="">007</span>: <span class="c"># NOTE type codes could be consider private so to avoid...</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">008</span>: <span class="k">cdef</span> <span class="kt">dict</span> <span class="nf">PG_OID_TYPEMAP</span> <span class="o">=</span> <span class="p">{</span></pre>
 <pre class="cython line score-8" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">009</span>:     <span class="n">BOOLOID</span><span class="p">:</span> <span class="n">Type</span><span class="o">.</span><span class="n">_Type_BOOL</span><span class="p">,</span></pre>
-<pre class='cython code score-8 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyDict_NewPresized</span>(7);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(7, 9, __pyx_L1_error)</span>
+<pre class='cython code score-8 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyDict_NewPresized</span>(7);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(8, 9, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::BOOL);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(7, 9, __pyx_L1_error)</span>
+  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::BOOL);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(8, 9, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_16, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(7, 9, __pyx_L1_error)</span>
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_16, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(8, 9, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
 </pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">010</span>:     <span class="n">INT2OID</span><span class="p">:</span> <span class="n">Type</span><span class="o">.</span><span class="n">_Type_INT16</span><span class="p">,</span></pre>
-<pre class='cython code score-6 '>  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::INT16);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(7, 10, __pyx_L1_error)</span>
+<pre class='cython code score-6 '>  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::INT16);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(8, 10, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_21, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(7, 9, __pyx_L1_error)</span>
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_21, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(8, 9, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
 </pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">011</span>:     <span class="n">INT4OID</span><span class="p">:</span> <span class="n">Type</span><span class="o">.</span><span class="n">_Type_INT32</span><span class="p">,</span></pre>
-<pre class='cython code score-6 '>  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::INT32);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(7, 11, __pyx_L1_error)</span>
+<pre class='cython code score-6 '>  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::INT32);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(8, 11, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_23, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(7, 9, __pyx_L1_error)</span>
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_23, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(8, 9, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
 </pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">012</span>:     <span class="n">INT8OID</span><span class="p">:</span> <span class="n">Type</span><span class="o">.</span><span class="n">_Type_INT64</span><span class="p">,</span></pre>
-<pre class='cython code score-6 '>  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::INT64);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(7, 12, __pyx_L1_error)</span>
+<pre class='cython code score-6 '>  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::INT64);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(8, 12, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_20, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(7, 9, __pyx_L1_error)</span>
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_20, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(8, 9, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
 </pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">013</span>:     <span class="n">FLOAT4OID</span><span class="p">:</span> <span class="n">Type</span><span class="o">.</span><span class="n">_Type_FLOAT</span><span class="p">,</span></pre>
-<pre class='cython code score-6 '>  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::FLOAT);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(7, 13, __pyx_L1_error)</span>
+<pre class='cython code score-6 '>  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::FLOAT);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(8, 13, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_700, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(7, 9, __pyx_L1_error)</span>
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_700, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(8, 9, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
 </pre><pre class="cython line score-6" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">014</span>:     <span class="n">FLOAT8OID</span><span class="p">:</span> <span class="n">Type</span><span class="o">.</span><span class="n">_Type_DOUBLE</span><span class="p">,</span></pre>
-<pre class='cython code score-6 '>  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::DOUBLE);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(7, 14, __pyx_L1_error)</span>
+<pre class='cython code score-6 '>  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::DOUBLE);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(8, 14, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_701, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(7, 9, __pyx_L1_error)</span>
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_701, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(8, 9, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
 </pre><pre class="cython line score-7" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">015</span>:     <span class="n">TIMESTAMPOID</span><span class="p">:</span> <span class="n">Type</span><span class="o">.</span><span class="n">_Type_TIMESTAMP</span></pre>
-<pre class='cython code score-7 '>  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::TIMESTAMP);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(7, 15, __pyx_L1_error)</span>
+<pre class='cython code score-7 '>  __pyx_t_2 = __Pyx_PyInt_From_enum____arrow_3a__3a_Type_3a__3a_type( arrow::Type::TIMESTAMP);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(8, 15, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_1114, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(7, 9, __pyx_L1_error)</span>
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_int_1114, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(8, 9, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
   <span class='refnanny'>__Pyx_XGOTREF</span>(__pyx_v_7pgarrow_6parser_PG_OID_TYPEMAP);
   <span class='pyx_macro_api'>__Pyx_DECREF_SET</span>(__pyx_v_7pgarrow_6parser_PG_OID_TYPEMAP, ((PyObject*)__pyx_t_1));

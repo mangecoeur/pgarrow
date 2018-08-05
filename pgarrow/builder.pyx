@@ -32,7 +32,6 @@ cdef class Int64Builder(AbstractBuilder):
     cdef  void append_null(self):
         self.c_builder.AppendNull()
 
-
     cdef void  append_bytes(self, char* dat) nogil:
         cdef long field_dat = unpack_int64(dat)
         self.c_builder.Append(field_dat)
@@ -40,7 +39,6 @@ cdef class Int64Builder(AbstractBuilder):
     cpdef finish(self):
         cdef shared_ptr[CArray] id_array
         cdef int res = check_status(self.c_builder.Finish(&id_array))
-        # TODO check return value and handle
         return pyarrow_wrap_array(id_array)
 
 
@@ -62,7 +60,6 @@ cdef class FloatBuilder(AbstractBuilder):
     cpdef finish(self):
         cdef shared_ptr[CArray] id_array
         cdef int res = check_status(self.c_builder.Finish(&id_array))
-        # TODO check return value and andle
         return pyarrow_wrap_array(id_array)
 
 
@@ -84,37 +81,50 @@ cdef class DoubleBuilder(AbstractBuilder):
     cpdef finish(self):
         cdef shared_ptr[CArray] id_array
         cdef int res = check_status(self.c_builder.Finish(&id_array))
+        return pyarrow_wrap_array(id_array)
+
+
+cdef class TimestampBuilder:
+    def __cinit__(self):
+        self.c_builder = new CTimestampBuilder()
+
+    cdef _append(self, long val):
+        self.c_builder.Append(val)
+
+    cdef void  append_null(self):
+        self.c_builder.AppendNull()
+
+    cdef void  append_bytes(self, char* dat) nogil:
+        cdef double field_dat = unpack_int64(dat)
+        self.c_builder.Append(field_dat)
+
+    cpdef finish(self):
+        cdef shared_ptr[CArray] id_array
+        cdef int res = check_status(self.c_builder.Finish(&id_array))
         # TODO check return value and andle
         return pyarrow_wrap_array(id_array)
 
 
-
-# cdef class TimestampBuilder:
+# cdef class Date64Builder(AbstractBuilder):
 #     def __cinit__(self):
-#         self.c_builder = new CTimestampBuilder()
+#         self.c_builder = new CInt64Builder()
 #
-#     cpdef _append(self, long val):
+#     cdef _append(self, long val):
 #         self.c_builder.Append(val)
 #
-#     cpdef _append_null(self):
+#     cdef  void append_null(self):
 #         self.c_builder.AppendNull()
 #
-#     cpdef append_bytes(self, bytes dat):
-#         TODO account for different base epoch of PG
+#     cdef void  append_bytes(self, char* dat) nogil:
 #         cdef long field_dat = unpack_int64(dat)
-#         self._append(field_dat)
-#
-#     def append(self, val=None):
-#         if val is None:
-#             self._append_null()
-#         else:
-#             self.append(val)
+#         self.c_builder.Append(field_dat)
 #
 #     cpdef finish(self):
 #         cdef shared_ptr[CArray] id_array
 #         cdef int res = check_status(self.c_builder.Finish(&id_array))
-#         # TODO check return value and andle
 #         return pyarrow_wrap_array(id_array)
+
+
 
 #
 #         CArrayBuilder(const shared_ptr[CDataType], CMemoryPool*)
