@@ -3,10 +3,6 @@ pgarrow
 ===============================
 
 
-.. image:: https://img.shields.io/travis/mangecoeur/pgarrow.svg
-        :target: https://travis-ci.org/mangecoeur/pgarrow
-
-
 postgres to arrow
 
 
@@ -39,4 +35,17 @@ Copy table in in memory bytes file (format binary)
 'bench_psyco_bin_read_sql'  2.4s
 
 Therefore if it was possible to convert from postgres binary straight to pandas (or at least via arrow)
-we could expect maybe 3x speedup (4x speedup plus overhead of conversion)
+we could expect maybe 3x speedup (4x speedup plus overhead of conversion).
+
+Note that this is in most cases is nice but not amazing - since in most analysis cases the work flow is:
+load to pandas -> do some work, you only load the data once. If it is 'a bit slow' to load
+e.g. 5-10 minutes, a 3 times improvement is nice but not revolutionary. If it is 'really slow'
+like >1hr, you would probably just save a copy of the data to a faster format like parquet and use
+that.
+
+Also the cython approach is not probably the best - to be more generally useful, better to have a C/++
+library with python wrapper (plus R etc), I reckon using libpq and a binary dependency. In general
+keeping types lined up will be a pain.
+
+Finally, for true performance improvements I think you really need a server-side component. Could imagine
+adding a format to Postgres COPY command to directly produce a binary stream in arrow format or something.
