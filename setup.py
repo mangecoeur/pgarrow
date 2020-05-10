@@ -14,7 +14,11 @@ requirements = [
 
 os.environ['CFLAGS'] = '-std=c++11 -stdlib=libc++'
 
-ext_modules = cythonize("pgarrow/*.pyx", annotate=True)
+ext_modules = cythonize("pgarrow/*.pyx", annotate=True,
+                        # compiler_directives={'language_level' : "3"},
+
+
+                        )
 
 for ext in ext_modules:
     # The Numpy C headers are currently required
@@ -39,7 +43,7 @@ setup(
     install_requires=requirements,
     keywords='pgarrow',
     classifiers=[
-        'Programming Language :: Python :: 3.6'],
+        'Programming Language :: Python :: 3.7'],
 
     ext_modules = ext_modules
 )

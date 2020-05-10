@@ -55,7 +55,8 @@ cdef extern from "arrow/builder.h" namespace "arrow" nogil:
     cdef cppclass CUInt64Builder" arrow::UInt64Builder"(CNumericBuilder):
         CUInt64Builder(CMemoryPool*)
         CUInt64Builder()
-        CStatus Append(uint64_t)
+        CStatus Append(int)
+        CStatus AppendNull()
 
 
     cdef cppclass CInt8Builder" arrow::Int8Builder"(CNumericBuilder):
@@ -70,12 +71,18 @@ cdef extern from "arrow/builder.h" namespace "arrow" nogil:
 
     cdef cppclass CInt32Builder" arrow::Int32Builder"(CNumericBuilder):
         CInt32Builder(CMemoryPool*)
-        CInt32Builder()
         CStatus Append(int32_t)
+
     cdef cppclass CInt64Builder" arrow::Int64Builder"(CNumericBuilder):
         CInt64Builder(CMemoryPool*)
-        CInt64Builder()
         CStatus Append(int64_t)
+
+        int64_t length()
+        int64_t null_count()
+
+        CStatus Append(int64_t)
+        CStatus AppendNull()
+        # CStatus Finish(shared_ptr[CArray]* out)
 
     cdef cppclass CHalfFloatBuilder" arrow::HalfFloatBuilder"(CNumericBuilder):
         CHalfFloatBuilder(CMemoryPool*)

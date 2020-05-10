@@ -76,9 +76,9 @@ def save_pg_binary():
         cur.copy_expert('COPY edrp_edf.elec_daily TO STDOUT WITH (FORMAT BINARY)', file)
 
 if __name__ == '__main__':
-    # bench_pd_read_sql()
+    bench_pd_read_sql()
     # bench_psyco_read_sql()
-    bench_psyco_bin_read_sql()
-    bench_apg_bin_read_sql()
+    # bench_psyco_bin_read_sql()
+    # bench_apg_bin_read_sql()
 
     # save_pg_binary()

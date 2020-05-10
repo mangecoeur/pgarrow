@@ -6,6 +6,7 @@ from pgarrow import parser
 from pgarrow.tools import timeit
 
 
+
 def test_edrp_readdat(filename):
     # hardcode from edrp_daily table
     field_names = ['site_id', 'reading_date', 'temperature_max', 'temperature_min', 'temperature_mean', 'power']
